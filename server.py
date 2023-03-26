@@ -10,55 +10,52 @@ root = tk.Tk()
 root.withdraw()
 
 @Pyro4.expose
-class Server():
-    def get_usernames(name):
-        return usernames[clients.index(name)]
+@Pyro4.behavior(instance_mode="single")
+class Server(object):
+    def __init__(self):
+        self.channels = {}  # registered channels { channel --> (nick, client callback) list }
+        self.nicks = []
+    def getChannels(self):
+        return list(self.channels.keys())
 
-    def set_clients(name):
-        usernames.append(name)
+    def getNicks(self):
+        return self.nicks
 
-    def globalMessage(message):
-        print("globalMessage: " + str(message))
-        for client in clients:
-            client.send(message)
+    def join(self, channel, nick, callback):
+        if not channel or not nick:
+            raise ValueError("Invalido nome ou canal")
+        if nick in self.nicks:
+            raise ValueError('Este usuario já existe')
+        if channel not in self.channels:
+            print('Criando um novo canal %s' % channel)
+            self.channels[channel] = []
+        self.channels[channel].append((nick, callback))
+        self.nicks.append(nick)
+        print("%s JOINED %s" % (nick, channel))
+        self.publish(channel, nick,  nick )
+        return [nick for (nick, c) in self.channels[channel]]
 
-    def handleMessages(self, teste):
-        print(teste)
+    def publish(self, channel, nick, msg):
+        if channel not in self.channels:
+            print('IGNORED UNKNOWN CHANNEL %s' % channel)
+            return
+        for (n, c) in self.channels[channel][:]:  # use a copy of the list
+            try:
+                print(msg)
+                c.receiveMessage(nick, msg)  # oneway call
+            except Pyro4.errors.ConnectionClosedError:
+                # connection dropped, remove the listener if it's still there
+                # check for existence because other thread may have killed it already
+                if (n, c) in self.channels[channel]:
+                    self.channels[channel].remove((n, c))
+                    print('Removed dead listener %s %s' % (n, c))
 
 def conexao(text_area):
-    Pyro4.Daemon.serveSimple(
-        {
-            Server: "Gekitai",
-        },
-        host="127.0.0.1",
-        port=210,
-        ns=False,
-        verbose=True,
-    )
-    print(f"Ready to listen")
-    # text_area.insert(tk.INSERT, "Servidor conectado!\n")
-    # while True:
-    #     try:
-    #         # Aceitando a conexao
-    #         client, address = server.accept()
-    #
-    #         # Adicionando a conexao a uma lista
-    #         print(f"Nova conexao no endereco: {str(address)}")
-    #         clients.append(client)
-    #         response = '{"event":"getUser", "index": "'+str(clients.index(client))+'"}'
-    #         client.send(response.encode(DEFAULT_ENCODING))
-    #         username = client.recv(2048).decode(DEFAULT_ENCODING)
-    #         usernames.append(username)
-    #
-    #         # Printa no terminal e no servidor
-    #         text_area.insert(tk.INSERT, f'{username} acaba de entrar no chat!\n'.encode(DEFAULT_ENCODING))
-    #         #globalMessage(f'{"event":"CHAT, "message": {username} acaba de entrar no chat!}\n'.encode(DEFAULT_ENCODING))
-    #
-    #         user_thread = threading.Thread(target=handleMessages,args=(client,))
-    #         user_thread.start()
-    #     except:
-    #         pass
+    Pyro4.Daemon.serveSimple({
+        Server: "gekitai.server"
+    })
 
+    print(f"Ready to listen")
 
 def janela_servidor():
     newWindow = Toplevel(root)
