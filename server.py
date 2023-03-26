@@ -41,8 +41,11 @@ class Server(object):
             return
         for (n, c) in self.channels[channel][:]:  # use a copy of the list
             try:
-                print(msg)
-                c.receiveMessage(nick, msg)  # oneway call
+                #print("---------- SERVIDOR ----------------")
+                #print(msg)
+                #print(self.channels)
+                index = self.nicks.index(nick)
+                c.receiveMessage(nick, index, msg)  # oneway call
             except Pyro4.errors.ConnectionClosedError:
                 # connection dropped, remove the listener if it's still there
                 # check for existence because other thread may have killed it already

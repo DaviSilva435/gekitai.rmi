@@ -7,5 +7,5 @@ gnome-terminal --tab --title "Server" -- bash -c "python3 server.py; exec bash -
 
 gnome-terminal --tab --title "Client" -- bash -c "python3 client.py; exec bash -i"
 
-#gnome-terminal --tab --title "Client" -- bash -c "python3 client.py; exec bash -i"
+gnome-terminal --tab --title "Client" -- bash -c "python3 client.py; exec bash -i"
 

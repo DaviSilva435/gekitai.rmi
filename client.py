@@ -24,6 +24,7 @@ b1 = b2 = b3 = b4 = b5 = b6 = Button()
 
 class Jogo():
     def __init__(self):
+        self.numero_jogador = None
         self.server = Pyro4.core.Proxy('PYRONAME:gekitai.server')
         self.abort = 0
 
@@ -64,7 +65,7 @@ class Jogo():
             global username
             global message
             channels = sorted(self.server.getChannels())
-            self.channel = jogador_name_input
+            self.channel = 'channel_cliente'
             self.nick = jogador_name_input
             people = self.server.join(self.channel, self.nick, self)
             self.server.publish(self.channel, self.nick, '{"event":"newUser", "name":"' + str(self.nick) + '"}')
@@ -295,8 +296,8 @@ class Jogo():
         nao_button.place(x=110, y=350)
 
     def efetuar_jogada(self, posicao):
-        global peca_disponivel, numero_jogador, ultima_jogada
-        if int(numero_jogador) == int(ultima_jogada):
+        global peca_disponivel, ultima_jogada
+        if int(self.numero_jogador) == int(ultima_jogada):
             self.janela_aviso("Nao é sua vez de jogar,\n aguarde o próximo jogador")
             print("Nao é sua vez de jogar, aguarde o próximo jogador")
         else:
@@ -388,7 +389,7 @@ class Jogo():
                 #print("Comparando",str(i), str(i +1), str(i+2))
                 if((globals()[f"p{(int(i))}"] == globals()[f"p{(i+1)}"] == globals()[f"p{(i+2)}"]) and globals()[f"p{(i)}"] != -1):
                     print("Vencedor em linha")
-                    if(globals()[f"p{(int(i))}"] == numero_jogador):
+                    if(globals()[f"p{(int(i))}"] == self.numero_jogador):
                         print("Vencedor1 ganhou")
                         vencedor1 = globals()[f"p{(int(i))}"]
                     else:
@@ -407,7 +408,7 @@ class Jogo():
                 #print("Comparando",str(i), str(i +6), str(i+12))
                 if ((globals()[f"p{(int(i))}"] == globals()[f"p{(i + 6)}"] == globals()[f"p{(i + 12)}"]) and globals()[
                     f"p{(i)}"] != -1):
-                    if (globals()[f"p{(int(i))}"] == numero_jogador):
+                    if (globals()[f"p{(int(i))}"] == self.numero_jogador):
                         vencedor1 = globals()[f"p{(int(i))}"]
                     else:
                         vencedor2 = globals()[f"p{(int(i))}"]
@@ -420,7 +421,7 @@ class Jogo():
                 #print("Comparando",str(i), str(i+7), str(i+14))
                 if ((globals()[f"p{(int(i))}"] == globals()[f"p{(i + 7)}"] == globals()[f"p{(i + 14)}"]) and globals()[
                     f"p{(i)}"] != -1):
-                    if (globals()[f"p{(int(i))}"] == numero_jogador):
+                    if (globals()[f"p{(int(i))}"] == self.numero_jogador):
                         vencedor1 = globals()[f"p{(int(i))}"]
                     else:
                         vencedor2 = globals()[f"p{(int(i))}"]
@@ -436,7 +437,7 @@ class Jogo():
                 #print("Comparando",str(i), str(i+5), str(i+10))
                 if ((globals()[f"p{(int(i))}"] == globals()[f"p{(i + 5)}"] == globals()[f"p{(i + 10)}"]) and globals()[
                     f"p{(i)}"] != -1):
-                    if (globals()[f"p{(int(i))}"] == numero_jogador):
+                    if (globals()[f"p{(int(i))}"] == self.numero_jogador):
                         vencedor1 = globals()[f"p{(int(i))}"]
                     else:
                         vencedor2 = globals()[f"p{(int(i))}"]
@@ -449,10 +450,12 @@ class Jogo():
 
     @Pyro4.expose
     @Pyro4.oneway
-    def receiveMessage(self, nick, msg):
-        global text_area_chat, numero_jogador, ultima_jogada, label_peca, peca_disponivel
+    def receiveMessage(self, nick, index, msg):
+        global text_area_chat, ultima_jogada, label_peca, peca_disponivel
 
         #while True:
+        print(msg)
+
         try:
             #message = client.recv(2048).decode(DEFAULT_ENCODING)
             entrada = []
@@ -462,16 +465,18 @@ class Jogo():
                     jsonData = json.loads(str("".join(entrada)))
                     if jsonData['event'] == 'newUser':
                         usernames.append(nick)
+                        if(self.nick == nick):
+                            self.numero_jogador = index
 
                     elif jsonData['event'] == 'CHAT':
                         text_area_chat.insert(tk.INSERT, nick + ':' + jsonData['message'] + '\n')
 
                     elif jsonData['event'] == 'JOGADA':
                         posicao = jsonData['posicao']
-                        ultima_jogada = jsonData['index']
-                        globals()[f"b{posicao}"]['bg'] = cors[jsonData['index']]
-                        globals()[f"b{posicao}"]['fg'] = cors[jsonData['index']]
-                        globals()[f"p{posicao}"] = jsonData['index']
+                        ultima_jogada = index
+                        globals()[f"b{posicao}"]['bg'] = cors[index]
+                        globals()[f"b{posicao}"]['fg'] = cors[index]
+                        globals()[f"p{posicao}"] = index
                         label_peca['text'] = "Peças disponíveis: " + str(peca_disponivel)
 
                     elif jsonData['event'] == 'MOVEPECA':
@@ -488,7 +493,7 @@ class Jogo():
 
                     elif jsonData['event'] == 'MOVEPECAPARAMAO':
                         posicaoinicial = int(jsonData['posicaoinicial'])
-                        if(nick == self.nick):
+                        if(int(self.numero_jogador) == int(index)):
                             peca_disponivel += 1
                         # Liberando casa antiga
                         globals()[f"b{posicaoinicial}"]['bg'] = "#000000"
@@ -498,7 +503,7 @@ class Jogo():
                         label_peca['text'] = "Peças disponíveis: " + str(peca_disponivel)
 
                     elif jsonData['event'] == 'VALIDAVENCEDOR':
-                        if(nick == self.nick):
+                        if(int(self.numero_jogador) == int(index)):
                             self.valida_vencedor()
 
                     elif jsonData['event'] == 'VENCEDORPORPECA':
@@ -510,17 +515,17 @@ class Jogo():
                             print("Não foi dessa vez!\nVocê perdeu!\n " +str(username))
 
                     elif jsonData['event'] == 'VENCEDOR':
-                        print("Numero Jogador ",str(numero_jogador))
+                        print("Numero Jogador ",str(self.numero_jogador))
                         if int(jsonData['vencedor1']) != -1 and int(jsonData['vencedor2']) != -1:
                             print("Os dois jogadores ganharam na mesma jogada, é necessário validar quem jogou")
-                            if int(numero_jogador) == int(ultima_jogada):
+                            if int(self.numero_jogador) == int(ultima_jogada):
                                 self.janela_resultado("Parabéns! Você ganhou!\n " +str(username))
                                 print("Você ganhou")
                             else:
                                 self.janela_resultado("Não foi dessa vez!\nVocê perdeu!\n " +str(username))
                                 print("Voce perdeu")
                         elif int(jsonData['vencedor1']) != -1 or int(jsonData['vencedor2']) != -1:
-                            if int(jsonData['vencedor1']) == int(numero_jogador) or int(jsonData['vencedor2']) == int(numero_jogador):
+                            if int(jsonData['vencedor1']) == int(self.numero_jogador) or int(jsonData['vencedor2']) == int(self.numero_jogador):
                                 self.janela_resultado("Parabéns! Você ganhou!\n " +str(username))
                                 print("Voce ganhou")
                             else:
@@ -528,7 +533,7 @@ class Jogo():
                                 print("Voce perdeu")
 
                     elif jsonData['event'] == 'DESISTIR':
-                        if(int(jsonData['index']) != int(numero_jogador)):
+                        if(int(index) != int(self.numero_jogador)):
                             self.janela_resultado("Parabéns! Você ganhou!\n " + str(username))
 
                     else:
