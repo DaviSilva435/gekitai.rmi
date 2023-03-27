@@ -310,70 +310,76 @@ class Jogo():
         #Movendo a peça superior
         if (int(posicao) - 6 ) <= 0:
             pass
-        elif (int(posicao) - 12) < 0 and globals()[f"p{(int(posicao) - 6)}"] != -1:
-            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao - 6) + '", "value": "' + str(globals()[f"p{(int(posicao) - 6)}"]) + '"}')
+        elif (int(posicao) - 12) <= 0 and globals()[f"p{(int(posicao) - 6)}"] != -1:
+            print("Move superior")
+            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao - 6) + '", "value": "' + str(globals()[f"p{(int(posicao) - 6)}"]) + '", "prefix": "S"}')
         elif (int(posicao) - 6) > 0 and (int(posicao) - 12) > 0 and globals()[f"p{(int(posicao) - 6)}"] != -1 and globals()[f"p{(int(posicao) - 12)}"] == -1:
-            self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao-6) + '", "posicaofinal": "' + str(posicao-12) +'", "value": "' + str(globals()[f"p{(int(posicao) - 6)}"]) +'"}')
+            self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao-6) + '", "posicaofinal": "' + str(posicao-12) +'", "value": "' + str(globals()[f"p{(int(posicao) - 6)}"]) +'", "prefix": "S"}')
 
         # Movendo a peça inferior
         if (int(posicao) + 6 ) > 36:
             pass
         elif (int(posicao) + 12) >= 36 and globals()[f"p{(int(posicao) + 6)}"] != -1:
-            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao + 6) + '", "value": "' + str(globals()[f"p{(int(posicao) + 6)}"]) + '"}')
+            print("Move inferior")
+            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao + 6) + '", "value": "' + str(globals()[f"p{(int(posicao) + 6)}"]) + '", "prefix": "I"}')
         elif (int(posicao) + 6) > 0 and (int(posicao) + 12) > 0 and globals()[f"p{(int(posicao) + 6)}"] != -1 and globals()[f"p{(int(posicao) + 12)}"] == -1:
-            self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao+6) + '", "posicaofinal": "' + str(posicao+12) +'", "value": "' + str(globals()[f"p{(int(posicao) + 6)}"]) +'"}')
+            self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao+6) + '", "posicaofinal": "' + str(posicao+12) +'", "value": "' + str(globals()[f"p{(int(posicao) + 6)}"]) +'", "prefix": "I"}')
 
         # Movendo a peça esquerda
-        if (int(posicao-1) % 6) == 1 and globals()[f"p{(int(posicao) - 1)}"] != -1:
+        if (int(posicao) % 6 == 1):
+            pass
+        elif (int(posicao-1) % 6) == 1 and globals()[f"p{(int(posicao) - 1)}"] != -1:
             self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao - 1) + '", "value": "' + str(globals()[f"p{(int(posicao) - 1)}"]) + '"}')
         elif (int(posicao) - 1) > 0 and (int(posicao) - 2) > 0 and globals()[f"p{(int(posicao) - 1)}"] != -1 and globals()[f"p{(int(posicao) - 2)}"] == -1:
-            self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao-1) + '", "posicaofinal": "' + str(posicao-2) +'", "value": "' + str(globals()[f"p{(int(posicao) - 1)}"]) +'"}')
+            self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao-1) + '", "posicaofinal": "' + str(posicao-2) +'", "value": "' + str(globals()[f"p{(int(posicao) - 1)}"]) +'", "prefix": "E"}')
 
         # Movendo a peça direita
-        if (int(posicao+1) % 6) == 0 and globals()[f"p{(int(posicao) + 1)}"] != -1:
-            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao + 1) + '", "value": "' + str(globals()[f"p{(int(posicao) + 1)}"]) + '"}')
+        if (int(posicao) % 6 == 0):
+            pass
+        elif (int(posicao+1) % 6) == 0 and globals()[f"p{(int(posicao) + 1)}"] != -1:
+            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao + 1) + '", "value": "' + str(globals()[f"p{(int(posicao) + 1)}"]) + '", "prefix": "D"}')
         elif (int(posicao) + 1) > 0 and (int(posicao) + 2) > 0 and globals()[f"p{(int(posicao) + 1)}"] != -1 and \
                 globals()[f"p{(int(posicao) + 2)}"] == -1:
-            self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao+1) + '", "posicaofinal": "' + str(posicao+2) +'", "value": "' + str(globals()[f"p{(int(posicao) + 1)}"]) +'"}')
+            self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao+1) + '", "posicaofinal": "' + str(posicao+2) +'", "value": "' + str(globals()[f"p{(int(posicao) + 1)}"]) +'", "prefix": "D"}')
 
         # Movendo a peça diagonal superior esquerda
-        if ((int(posicao) - 7) <= 0):
+        if ((int(posicao) - 7) <= 0 or int(posicao) % 6 == 1):
             pass
         elif ((int(posicao) - 14) < 0 and globals()[f"p{(int(posicao) - 7)}"] != -1) or ((int(posicao-7) % 6) == 1 and globals()[f"p{(int(posicao) - 7)}"] != -1):
-            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao - 7) + '", "value": "' + str(globals()[f"p{(int(posicao) - 7)}"]) + '"}')
+            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao - 7) + '", "value": "' + str(globals()[f"p{(int(posicao) - 7)}"]) + '", "prefix": "SE"}')
         elif (int(posicao) - 7) > 0 and (int(posicao) - 14) > 0 and globals()[f"p{(int(posicao) - 7)}"] != -1 and \
                 globals()[f"p{(int(posicao) - 14)}"] == -1:
             self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao - 7) + '", "posicaofinal": "' + str(
-                posicao - 14) + '", "value": "' + str(globals()[f"p{(int(posicao) - 7)}"]) + '"}')
+                posicao - 14) + '", "value": "' + str(globals()[f"p{(int(posicao) - 7)}"]) + '", "prefix": "SE"}')
 
         # Movendo a peça diagonal superior direita
-        if ((int(posicao) - 5) <= 0):
+        if ((int(posicao) - 5) <= 0 or int(posicao) % 6 == 0 ):
             pass
         elif ((int(posicao) - 10) < 0 and globals()[f"p{(int(posicao) - 5)}"] != -1) or ((int(posicao-5) % 6) == 0 and globals()[f"p{(int(posicao) - 5)}"] != -1):
-            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao - 5) + '", "value": "' + str(globals()[f"p{(int(posicao) - 5)}"]) + '"}')
+            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao - 5) + '", "value": "' + str(globals()[f"p{(int(posicao) - 5)}"]) + '", "prefix": "SD"}')
         elif (int(posicao) -5) > 0 and (int(posicao) - 10) > 0 and globals()[f"p{(int(posicao) - 5)}"] != -1 and \
                 globals()[f"p{(int(posicao) - 10)}"] == -1:
             self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao - 5) + '", "posicaofinal": "' + str(
-                posicao - 10) + '", "value": "' + str(globals()[f"p{(int(posicao) - 5)}"]) + '"}')
+                posicao - 10) + '", "value": "' + str(globals()[f"p{(int(posicao) - 5)}"]) + '", "prefix": "SD"}')
 
         # Movendo a peça diagonal inferior esquerda
-        if ((int(posicao) + 5) > 36):
+        if ((int(posicao) + 5) > 36 or int(posicao) % 6 == 1):
             pass
         elif ((int(posicao) + 10) > 36 and globals()[f"p{(int(posicao) + 5)}"] != -1) or ((int(posicao+5) % 6) == 1 and globals()[f"p{(int(posicao) + 5)}"] != -1):
-            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao + 5) + '", "value": "' + str(globals()[f"p{(int(posicao) + 5)}"]) + '"}')
+            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao + 5) + '", "value": "' + str(globals()[f"p{(int(posicao) + 5)}"]) + '", "prefix": "IE"}')
         elif (int(posicao) + 5) <= 36 and (int(posicao) + 10) <= 36 and globals()[f"p{(int(posicao) + 5)}"] != -1 and globals()[f"p{(int(posicao) + 10)}"] == -1:
             self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao + 5) + '", "posicaofinal": "' + str(
-                posicao + 10) + '", "value": "' + str(globals()[f"p{(int(posicao) + 5)}"]) + '"}')
+                posicao + 10) + '", "value": "' + str(globals()[f"p{(int(posicao) + 5)}"]) + '", "prefix": "IE"}')
 
         # Movendo a peça diagonal inferior direita
-        if ((int(posicao) + 7) > 36):
+        if ((int(posicao) + 7) > 36 or int(posicao) % 6 == 0):
             pass
         elif ((int(posicao) + 14) > 36 and globals()[f"p{(int(posicao) + 7)}"] != -1) or ((int(posicao+7) % 6) == 0 and globals()[f"p{(int(posicao) + 7)}"] != -1):
-            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao + 7) + '", "value": "' + str(globals()[f"p{(int(posicao) + 7)}"]) + '"}')
+            self.sendMessage('{"event":"MOVEPECAPARAMAO", "posicaoinicial":"' + str(posicao + 7) + '", "value": "' + str(globals()[f"p{(int(posicao) + 7)}"]) + '", "prefix": "ID"}')
         elif (int(posicao) + 7) <= 36 and (int(posicao) + 14) <= 36 and globals()[f"p{(int(posicao) + 7)}"] != -1 and globals()[
             f"p{(int(posicao) + 14)}"] == -1:
             self.sendMessage('{"event":"MOVEPECA", "posicaoinicial":"' + str(posicao + 7) + '", "posicaofinal": "' + str(
-                posicao + 14) + '", "value": "' + str(globals()[f"p{(int(posicao) + 7)}"]) + '"}')
+                posicao + 14) + '", "value": "' + str(globals()[f"p{(int(posicao) + 7)}"]) + '", "prefix": "ID"}')
 
 
     def valida_vencedor(self):
@@ -493,7 +499,7 @@ class Jogo():
 
                     elif jsonData['event'] == 'MOVEPECAPARAMAO':
                         posicaoinicial = int(jsonData['posicaoinicial'])
-                        if(int(self.numero_jogador) == int(index)):
+                        if(int(self.numero_jogador) == int(jsonData['value'])):
                             peca_disponivel += 1
                         # Liberando casa antiga
                         globals()[f"b{posicaoinicial}"]['bg'] = "#000000"
@@ -503,38 +509,38 @@ class Jogo():
                         label_peca['text'] = "Peças disponíveis: " + str(peca_disponivel)
 
                     elif jsonData['event'] == 'VALIDAVENCEDOR':
-                        if(int(self.numero_jogador) == int(index)):
-                            self.valida_vencedor()
+                        #if(int(self.numero_jogador) == int(index)):
+                        self.valida_vencedor()
 
                     elif jsonData['event'] == 'VENCEDORPORPECA':
                         if(nick == self.nick):
-                            self.janela_resultado("Parabéns! Você ganhou!\n " +str(username))
+                            self.janela_resultado("Parabéns! Você ganhou!\n " +str(self.nick))
                             print("Você ganhou")
                         else:
-                            self.janela_resultado("Não foi dessa vez!\nVocê perdeu!\n " +str(username))
-                            print("Não foi dessa vez!\nVocê perdeu!\n " +str(username))
+                            self.janela_resultado("Não foi dessa vez!\nVocê perdeu!\n " +str(self.nick))
+                            print("Não foi dessa vez!\nVocê perdeu!\n " +str(self.nick))
 
                     elif jsonData['event'] == 'VENCEDOR':
                         print("Numero Jogador ",str(self.numero_jogador))
                         if int(jsonData['vencedor1']) != -1 and int(jsonData['vencedor2']) != -1:
                             print("Os dois jogadores ganharam na mesma jogada, é necessário validar quem jogou")
                             if int(self.numero_jogador) == int(ultima_jogada):
-                                self.janela_resultado("Parabéns! Você ganhou!\n " +str(username))
+                                self.janela_resultado("Parabéns! Você ganhou!\n " +str(self.nick))
                                 print("Você ganhou")
                             else:
-                                self.janela_resultado("Não foi dessa vez!\nVocê perdeu!\n " +str(username))
+                                self.janela_resultado("Não foi dessa vez!\nVocê perdeu!\n " +str(self.nick))
                                 print("Voce perdeu")
                         elif int(jsonData['vencedor1']) != -1 or int(jsonData['vencedor2']) != -1:
                             if int(jsonData['vencedor1']) == int(self.numero_jogador) or int(jsonData['vencedor2']) == int(self.numero_jogador):
-                                self.janela_resultado("Parabéns! Você ganhou!\n " +str(username))
+                                self.janela_resultado("Parabéns! Você ganhou!\n " +str(self.nick))
                                 print("Voce ganhou")
                             else:
-                                self.janela_resultado("Não foi dessa vez!\nVocê perdeu!\n " +str(username))
+                                self.janela_resultado("Não foi dessa vez!\nVocê perdeu!\n " +str(self.nick))
                                 print("Voce perdeu")
 
                     elif jsonData['event'] == 'DESISTIR':
                         if(int(index) != int(self.numero_jogador)):
-                            self.janela_resultado("Parabéns! Você ganhou!\n " + str(username))
+                            self.janela_resultado("Parabéns! Você ganhou!\n " + str(self.nick))
 
                     else:
                         print("Foi enviado um objeto desconhecido e nao mapeado")
